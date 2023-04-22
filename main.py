@@ -25,18 +25,41 @@ def imprimeCanaisRGB(R, G, B, shape):
 
 
 def rgbParaYiq(R, G, B):
+    r_norm = R/255
+    g_norm = G/255
+    b_norm = B/255
 
-    y = []
-    i = []
-    q = []
+    y = 0.299*r_norm + 0.587*g_norm + 0.114*b_norm
+    i = 0.596*r_norm - 0.274*g_norm - 0.322*b_norm
+    q = 0.211*r_norm - 0.523*g_norm + 0.312*b_norm
 
-    for x in R:
-        y.append(0.299*R[x] + 0.587*G[x] + 0.114*B[x])
-        i.append(0.596*R[x] - 0.274*G[x] - 0.322*B[x])
-        q.append(0.221*R[x] - 0.523*G[x] - 0.312*B[x])
-
-    print(y)
     return y, i, q
+
+
+def yiqParaRgb(Y, I, Q):
+    r = Y + 0.956*I + 0.621*Q
+    g = Y - 0.272*I - 0.647*Q
+    b = Y - 1.106*I + 1.703*Q
+
+    r_norm = np.uint8(np.clip(r*255, 0, 255))
+    g_norm = np.uint8(np.clip(g*255, 0, 255))
+    b_norm = np.uint8(np.clip(b*255, 0, 255))
+
+    return r_norm, g_norm, b_norm
+
+
+def converteRgbparaYiqParaRgb(R, G, B):
+    # converte para yiq
+    y, i, q = rgbParaYiq(R, G, B)
+    yiq = np.dstack((y, i, q))
+    yiq = np.clip(yiq, 0, 1)
+    # converte para rgb
+    r, g, b = yiqParaRgb(y, i, q)
+    rgb = np.dstack((r, g, b))
+    rgb = np.clip(rgb, 0, 255)
+    # cria figuras
+    criarFigura(yiq, 'YIQ')
+    criarFigura(rgb, 'RGB2')
 
 
 def main():
@@ -48,8 +71,9 @@ def main():
     B = img[:, :, 2]
 
     criarFigura(img, 'RGB')
-    imprimeCanaisRGB(R, G, B, img.shape[:2])
-    Y, I, Q = rgbParaYiq(R, G, B)
+    # imprimeCanaisRGB(R, G, B, img.shape[:2])
+    converteRgbparaYiqParaRgb(R, G, B)
+
     plt.show()
 
 
