@@ -24,6 +24,21 @@ def imprimeCanaisRGB(R, G, B, shape):
     criarFigura(rgb, 'Rgb2')
 
 
+def rgbParaYiq(R, G, B):
+
+    y = []
+    i = []
+    q = []
+
+    for x in R:
+        y.append(0.299*R[x] + 0.587*G[x] + 0.114*B[x])
+        i.append(0.596*R[x] - 0.274*G[x] - 0.322*B[x])
+        q.append(0.221*R[x] - 0.523*G[x] - 0.312*B[x])
+
+    print(y)
+    return y, i, q
+
+
 def main():
     # Abre a imagem
     img = cv2.imread('testpat.1k.color2.tif')
@@ -34,6 +49,7 @@ def main():
 
     criarFigura(img, 'RGB')
     imprimeCanaisRGB(R, G, B, img.shape[:2])
+    Y, I, Q = rgbParaYiq(R, G, B)
     plt.show()
 
 
