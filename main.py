@@ -62,17 +62,38 @@ def converteRgbparaYiqParaRgb(R, G, B):
     criarFigura(rgb, 'RGB2')
 
 
+def negativoRgb(img):
+    negativo = 255-img
+    criarFigura(negativo, 'Negativo RGB')
+
+
+def negativoEmY(R, G, B):
+    y, i, q = rgbParaYiq(R, G, B)
+    y = 1-y
+    r, g, b = yiqParaRgb(y, i, q)
+    negativo_y = np.dstack((r, g, b))
+    negativo_y = np.clip(negativo_y, 0, 255)
+    criarFigura(negativo_y, 'Negativo em Y')
+
+
 def main():
     # Abre a imagem
     img = cv2.imread('testpat.1k.color2.tif')
-    # Separa os canais RGB
-    R = img[:, :, 0]
-    G = img[:, :, 1]
-    B = img[:, :, 2]
+    # img = cv2.imread('cereja.jpg')
 
-    criarFigura(img, 'RGB')
+    # inverter a ordem dos canais bgr -> rgb
+    img_rgb = img[:, :, ::-1]
+
+    # Separa os canais RGB
+    R = img_rgb[:, :, 0]
+    G = img_rgb[:, :, 1]
+    B = img_rgb[:, :, 2]
+
+    criarFigura(img_rgb, 'RGB')
     # imprimeCanaisRGB(R, G, B, img.shape[:2])
-    converteRgbparaYiqParaRgb(R, G, B)
+    # converteRgbparaYiqParaRgb(R, G, B)
+    # negativoRgb(img_rgb)
+    # negativoEmY(R, G, B)
 
     plt.show()
 
