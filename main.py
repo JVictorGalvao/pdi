@@ -296,7 +296,7 @@ def main():
     filtroSobelV(R, G, B)
     filtroSobel(R, G, B)
     filtroEmboss(R, G, B, 128)
-    median_filter(img_rgb, 20)
+    filtroMediana(img_rgb, 20)
 
     plt.show()
 
