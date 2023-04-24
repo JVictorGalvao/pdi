@@ -17,13 +17,10 @@ def imprimeCanaisRGB(R, G, B, shape):
     r_zero = np.dstack((R, zeros, zeros))
     g_zero = np.dstack((zeros, G, zeros))
     b_zero = np.dstack((zeros, zeros, B))
-    # Junta os canais em uma imagem RGB novamente
-    rgb = np.dstack((R, G, B))
 
     criarFigura(b_zero, 'B')
     criarFigura(g_zero, 'G')
     criarFigura(r_zero, 'R')
-    criarFigura(rgb, 'Rgb2')
 
 
 def rgbParaYiq(R, G, B):
@@ -263,8 +260,8 @@ def filtroMediana(image, tam_mascara):
 
 def main():
     # Abre a imagem
-    # img = cv2.imread('imagem.tif')
-    img = cv2.imread('cereja.jpg')
+    img = cv2.imread('imagem.tif')
+    # img = cv2.imread('DancingInWater.jpg')
 
     # inverter a ordem dos canais bgr -> rgb
     img_rgb = img[:, :, ::-1]
@@ -296,7 +293,7 @@ def main():
     filtroSobelV(R, G, B)
     filtroSobel(R, G, B)
     filtroEmboss(R, G, B, 128)
-    filtroMediana(img_rgb, 20)
+    filtroMediana(img_rgb, 9)
 
     plt.show()
 
