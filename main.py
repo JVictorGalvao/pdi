@@ -245,27 +245,20 @@ def filtroEmboss(R, G, B, offset):
     criarFigura(img, "EMBOSS")
 
 
-def median_filter(image, kernel_size):
-    # Cria uma matriz auxiliar do tamanho da imagem para armazenar o resultado
-    result = np.zeros_like(image)
+def filtroMediana(image, tam_mascara):
+    img = np.zeros_like(image)
 
-    # Expandir a imagem com zeros
-    padded_image = np.pad(
-        image, ((kernel_size//2,), (kernel_size//2,), (0,)), mode='constant')
+    img_exp = np.pad(
+        image, ((tam_mascara//2,), (tam_mascara//2,), (0,)), mode='constant')
 
     # Percorrer cada pixel da imagem
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
-            # Extrair o kernel correspondente ao pixel atual
-            kernel = padded_image[i:i+kernel_size, j:j+kernel_size, :]
+            filtro = img_exp[i:i+tam_mascara, j:j+tam_mascara, :]
+            mediana = np.median(filtro, axis=(0, 1))
+            img[i, j, :] = mediana
 
-            # Calcular a mediana em cada canal de cor do kernel
-            median = np.median(kernel, axis=(0, 1))
-
-            # Atribuir o valor da mediana à posição correspondente na matriz resultante
-            result[i, j, :] = median
-
-    criarFigura(result, "MEDIANA")
+    criarFigura(img, "MEDIANA")
 
 
 def main():
