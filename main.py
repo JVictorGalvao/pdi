@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from scipy.signal import convolve2d
+import time
 
 
 def criarFigura(img, label):
@@ -76,10 +78,200 @@ def negativoEmY(R, G, B):
     criarFigura(negativo_y, 'Negativo em Y')
 
 
+def filtroSoma(R, G, B):
+    # abre o arquivo com filtro
+    with open('soma.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_r, canal_g, canal_b))
+    img = np.clip(img, 0, 255)
+
+    criarFigura(img, "SOMA")
+
+
+def filtroMedia(R, G, B):
+    # abre o arquivo com filtro
+    with open('media11x11.txt', 'r') as f:
+        filtro = np.array([[float(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_r, canal_g, canal_b)).astype(np.uint8)
+
+    criarFigura(img, "MEDIA")
+
+
+def filtroMediaDuplo(R, G, B):
+    # abre o arquivo com filtro
+    with open('media1x11.txt', 'r') as f:
+        filtro = np.array([[float(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    with open('media11x1.txt', 'r') as f:
+        filtro = np.array([[float(num) for num in line.split()]
+                           for line in f])
+
+    canal_rr = convolve2d(canal_r, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+    canal_gg = convolve2d(canal_g, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+    canal_bb = convolve2d(canal_b, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_rr, canal_gg, canal_bb)).astype(np.uint8)
+
+    criarFigura(img, "MEDIADUPLA")
+
+
+def filtroSobelH(R, G, B):
+    r_min = np.min(R)
+    r_max = np.max(R)
+    g_min = np.min(G)
+    g_max = np.max(G)
+    b_min = np.min(B)
+    b_max = np.max(B)
+    L = 256
+    R = ((R - r_min) * ((L-1)/(r_max - r_min))).astype(np.uint8)
+    G = ((G - g_min) * ((L-1)/(g_max - g_min))).astype(np.uint8)
+    B = ((B - b_min) * ((L-1)/(b_max - b_min))).astype(np.uint8)
+    # abre o arquivo com filtro
+    with open('sobelh.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_r, canal_g, canal_b))
+    img = np.clip(img, 0, 255)
+
+    criarFigura(img, "SOBELH")
+
+
+def filtroSobelV(R, G, B):
+    r_min = np.min(R)
+    r_max = np.max(R)
+    g_min = np.min(G)
+    g_max = np.max(G)
+    b_min = np.min(B)
+    b_max = np.max(B)
+    L = 256
+    R = ((R - r_min) * ((L-1)/(r_max - r_min))).astype(np.uint8)
+    G = ((G - g_min) * ((L-1)/(g_max - g_min))).astype(np.uint8)
+    B = ((B - b_min) * ((L-1)/(b_max - b_min))).astype(np.uint8)
+    # abre o arquivo com filtro
+    with open('sobelv.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_r, canal_g, canal_b))
+    img = np.clip(img, 0, 255)
+
+    criarFigura(img, "SOBELV")
+
+
+def filtroSobel(R, G, B):
+
+    r_min = np.min(R)
+    r_max = np.max(R)
+    g_min = np.min(G)
+    g_max = np.max(G)
+    b_min = np.min(B)
+    b_max = np.max(B)
+    L = 256
+    R = ((R - r_min) * ((L-1)/(r_max - r_min))).astype(np.uint8)
+    G = ((G - g_min) * ((L-1)/(g_max - g_min))).astype(np.uint8)
+    B = ((B - b_min) * ((L-1)/(b_max - b_min))).astype(np.uint8)
+
+    # abre o arquivo com filtro
+    with open('sobelh.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    with open('sobelv.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_rr = convolve2d(canal_r, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+    canal_gg = convolve2d(canal_g, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+    canal_bb = convolve2d(canal_b, filtro, mode='same',
+                          boundary='fill', fillvalue=0)
+
+    img = np.dstack((canal_rr, canal_gg, canal_bb))
+    img = np.clip(img, 0, 255)
+
+    criarFigura(img, "SOBEL")
+
+
+def filtroEmboss(R, G, B, offset):
+    with open('emboss.txt', 'r') as f:
+        filtro = np.array([[int(num) for num in line.split()]
+                          for line in f])
+
+    canal_r = convolve2d(R, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_g = convolve2d(G, filtro, mode='same', boundary='fill', fillvalue=0)
+    canal_b = convolve2d(B, filtro, mode='same', boundary='fill', fillvalue=0)
+
+    canal_r += offset
+    canal_g += offset
+    canal_b += offset
+
+    img = np.dstack((canal_r, canal_g, canal_b))
+    img = np.clip(img, 0, 255)
+
+    criarFigura(img, "EMBOSS")
+
+
+def median_filter(image, kernel_size):
+    # Cria uma matriz auxiliar do tamanho da imagem para armazenar o resultado
+    result = np.zeros_like(image)
+
+    # Expandir a imagem com zeros
+    padded_image = np.pad(
+        image, ((kernel_size//2,), (kernel_size//2,), (0,)), mode='constant')
+
+    # Percorrer cada pixel da imagem
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            # Extrair o kernel correspondente ao pixel atual
+            kernel = padded_image[i:i+kernel_size, j:j+kernel_size, :]
+
+            # Calcular a mediana em cada canal de cor do kernel
+            median = np.median(kernel, axis=(0, 1))
+
+            # Atribuir o valor da mediana à posição correspondente na matriz resultante
+            result[i, j, :] = median
+
+    criarFigura(result, "MEDIANA")
+
+
 def main():
     # Abre a imagem
-    img = cv2.imread('testpat.1k.color2.tif')
-    # img = cv2.imread('cereja.jpg')
+    # img = cv2.imread('imagem.tif')
+    img = cv2.imread('cereja.jpg')
 
     # inverter a ordem dos canais bgr -> rgb
     img_rgb = img[:, :, ::-1]
@@ -90,10 +282,28 @@ def main():
     B = img_rgb[:, :, 2]
 
     criarFigura(img_rgb, 'RGB')
-    # imprimeCanaisRGB(R, G, B, img.shape[:2])
-    # converteRgbparaYiqParaRgb(R, G, B)
-    # negativoRgb(img_rgb)
-    # negativoEmY(R, G, B)
+    imprimeCanaisRGB(R, G, B, img.shape[:2])
+    converteRgbparaYiqParaRgb(R, G, B)
+    negativoRgb(img_rgb)
+    negativoEmY(R, G, B)
+    filtroSoma(R, G, B)
+    inicio11 = time.time()
+    filtroMedia(R, G, B)
+    fim11 = time.time()
+    tempo_de_execucao11x11 = fim11 - inicio11
+    inicio1 = time.time()
+    filtroMediaDuplo(R, G, B)
+    fim1 = time.time()
+    tempo_de_execucao_duplo = fim1 - inicio1
+    print("Tempo de execução 11x11: {:.2f} segundos".format(
+        tempo_de_execucao11x11))
+    print("Tempo de execução 1x11(11x1): {:.2f} segundos".format(
+        tempo_de_execucao_duplo))
+    filtroSobelH(R, G, B)
+    filtroSobelV(R, G, B)
+    filtroSobel(R, G, B)
+    filtroEmboss(R, G, B, 128)
+    median_filter(img_rgb, 20)
 
     plt.show()
 
